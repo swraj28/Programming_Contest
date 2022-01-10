@@ -14,7 +14,30 @@ using namespace std;
 
 class Solution {
 public:
+
+	int dp[105];
+
+	int recur(vector<int> &nums, int si, int n) { // This function will return us the maximum theivery
+		if (si >= n) {
+			return 0;
+		}
+
+		if (dp[si] != -1) {
+			return dp[si];
+		}
+
+		int a = nums[si] + recur(nums, si + 2, n);
+		int b = recur(nums, si + 1, n);
+
+		return dp[si] = max({a, b});
+	}
+
 	int rob(vector<int>& nums) {
 
+		int n = nums.size();
+
+		memset(dp, -1, sizeof(dp));
+
+		return recur(nums, 0, n);
 	}
 };

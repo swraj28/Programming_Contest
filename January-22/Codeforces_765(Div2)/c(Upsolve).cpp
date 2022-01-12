@@ -39,39 +39,66 @@ ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) %
 ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprime(b, m), m) + m) % m;}  //only for prime m
 /*--------------------------------------------------------------------------------------------*/
 
+ll n, l, k;
+vector<ll> a, b;
+
+int dp[505][505];
+
+int recur(int si, int cnt) {
+	if (si >= n) {
+		return 0;
+	}
+
+	if (dp[si][cnt] != -1) {
+		return dp[si][cnt];
+	}
+
+	int ans = INT_MAX;
+
+	for (int i = 0; i <= cnt; i++) {
+
+		int pos = (si + i + 1);
+
+		if (pos > n) {
+			break;
+		}
+
+		// The possiblity is to either delete that element or not delete the elemet. (i=0)-> not deleting any element. (i=1)->removing 1 element
+
+		int d = (a[pos] - a[si]);
+		int speed = (b[si]);
+
+		ans = min({ans, recur(pos, cnt - i) + (d * speed)});
+	}
+
+	return dp[si][cnt] = ans;
+}
+
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-	set<ll> s;
+	cin >> n >> l >> k;
 
-	for (ll i = 1; i <= 9; i++) {
-		for (ll j = -9; j <= 9; j++) {
-			string ans = "";
-			ans += (i + '0');
-			for (ll k = 1; k <= 18; k++) {
+	for (ll i = 0; i < n; i++) {
+		ll x;
+		cin >> x;
 
-				s.insert(stoll(ans));
-
-				int x = ans[ans.length() - 1] - '0';
-
-				x += j;
-
-				if (x < 0 or x > 9) {
-					break;
-				}
-
-				ans += (x + '0');
-			}
-		}
+		a.pb(x);
 	}
 
+	a.pb(l);
 
-	ll x;
-	cin >> x;
+	for (ll i = 0; i < n; i++) {
+		ll x;
+		cin >> x;
 
-	auto itr = s.lower_bound(x);
+		b.pb(x);
+	}
 
-	cout << (*itr) << endl;
+	ms(dp, -1);
+
+	cout << recur(0, k) << endl;
+
 
 	return 0;
 }

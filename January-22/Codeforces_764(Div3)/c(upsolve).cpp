@@ -42,36 +42,63 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-	set<ll> s;
+	int t;
+	cin >> t;
+	while (t--) {
 
-	for (ll i = 1; i <= 9; i++) {
-		for (ll j = -9; j <= 9; j++) {
-			string ans = "";
-			ans += (i + '0');
-			for (ll k = 1; k <= 18; k++) {
+		int n;
+		cin >> n;
 
-				s.insert(stoll(ans));
+		multiset<int> s;
 
-				int x = ans[ans.length() - 1] - '0';
+		for (int i = 0; i < n; i++) {
+			int x;
+			cin >> x;
 
-				x += j;
+			while (x > n) {
+				x /= 2;
+			}
 
-				if (x < 0 or x > 9) {
-					break;
+			s.insert(x);
+		}
+
+		bool f = true;
+
+		for (int i = n; i >= 1; i--) {
+
+			int val = -1;
+
+			for (auto ele : s) {
+
+				int y = ele;
+
+				int z = ele;
+
+				while (z > i) {
+					z /= 2;
 				}
 
-				ans += (x + '0');
+				if (z == i) {
+					val = y;
+					break;
+				}
 			}
+
+			if (val == -1) {
+				f = false;
+				break;
+			}
+
+			auto itr = s.find(val);
+			s.erase(itr);
+		}
+
+		if (f) {
+			YES;
+		} else {
+			NO;
 		}
 	}
-
-
-	ll x;
-	cin >> x;
-
-	auto itr = s.lower_bound(x);
-
-	cout << (*itr) << endl;
 
 	return 0;
 }

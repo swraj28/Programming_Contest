@@ -42,36 +42,24 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-	set<ll> s;
+	int t;
+	cin >> t;
+	while (t--) {
+		int n;
+		cin >> n;
 
-	for (ll i = 1; i <= 9; i++) {
-		for (ll j = -9; j <= 9; j++) {
-			string ans = "";
-			ans += (i + '0');
-			for (ll k = 1; k <= 18; k++) {
+		int mn = INT_MAX;
+		int mx = INT_MIN;
 
-				s.insert(stoll(ans));
-
-				int x = ans[ans.length() - 1] - '0';
-
-				x += j;
-
-				if (x < 0 or x > 9) {
-					break;
-				}
-
-				ans += (x + '0');
-			}
+		for (int i = 0; i < n; i++) {
+			int x;
+			cin >> x;
+			mn = min(mn, x);
+			mx = max(mx, x);
 		}
+
+		cout << (mx - mn) << endl;
 	}
-
-
-	ll x;
-	cin >> x;
-
-	auto itr = s.lower_bound(x);
-
-	cout << (*itr) << endl;
 
 	return 0;
 }

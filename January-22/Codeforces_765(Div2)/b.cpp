@@ -42,36 +42,47 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-	set<ll> s;
+	int t;
+	cin >> t;
+	while (t--) {
+		int n;
+		cin >> n;
+		mk(arr, n, int);
+		set<int> s;
+		for (int i = 0; i < n; i++) {
+			cin >> arr[i];
+			s.insert(arr[i]);
+		}
 
-	for (ll i = 1; i <= 9; i++) {
-		for (ll j = -9; j <= 9; j++) {
-			string ans = "";
-			ans += (i + '0');
-			for (ll k = 1; k <= 18; k++) {
+		if (s.size() == n) {
+			cout << -1 << endl;
+			continue;
+		}
 
-				s.insert(stoll(ans));
+		vector<pair<int, int>> v;
 
-				int x = ans[ans.length() - 1] - '0';
+		for (int i = 0; i < n; i++) {
+			v.pb({arr[i], i});
+		}
 
-				x += j;
+		sort(all(v));
 
-				if (x < 0 or x > 9) {
-					break;
-				}
+		int mx = 0;
 
-				ans += (x + '0');
+		for (int i = 1; i < n; i++) {
+			if (v[i].ff == v[i - 1].ff) {
+
+				int left = v[i - 1].ss;
+				int right = ((n - 1) - v[i].ss);
+
+				int total = (left + right + 1);
+
+				mx = max(mx, total);
 			}
 		}
+
+		cout << mx << endl;
 	}
-
-
-	ll x;
-	cin >> x;
-
-	auto itr = s.lower_bound(x);
-
-	cout << (*itr) << endl;
 
 	return 0;
 }

@@ -104,33 +104,44 @@ int main() {
 
 		vector<Edge> edges;
 
-		for (int i = 0; i < m; i++) {  // o(m)
+		for (int i = 0; i < m; i++) {
 			int a, b, w;
 			cin >> a >> b >> w;
 
 			edges.push_back({a, b, w});
 		}
 
-		sort(edges.begin(), edges.end()); // o(mlog(m))
+		int total = (1 << 30) - 1;
 
-		// for (int i = 0; i < m; i++) {
-		// 	cout << edges[i].u << " " << edges[i].v << " " << edges[i].weight << endl;
-		// }
+		int mask = 0;
 
-		int mn_cost = 0;
+		for (int i = 29; i >= 0; i--) {
 
-		for (int i = 1; i <= n; i++) { // o(n)
-			make_set(i);
-		}
+			for (int i = 1; i <= n; i++) {
+				make_set(i);
+			}
 
-		for (Edge e : edges) {  // o(m)
-			if (find_par(e.u) != find_par(e.v)) {
-				mn_cost += e.weight;
-				union_sets(e.u, e.v);
+			int total_component = n;
+
+			int n_mask = mask | (1 << i);
+
+			for (Edge e : edges) {
+				if (((e.weight & n_mask) == 0)) {
+					if (find_par(e.u) != find_par(e.v)) {
+						union_sets(e.u, e.v);
+						total_component -= 1;
+					}
+				}
+			}
+
+			if (total_component == 1) {
+				mask |= n_mask;
 			}
 		}
 
-		cout << mn_cost << endl;
+		total ^= mask;
+
+		cout << total << endl;
 	}
 
 	return 0;

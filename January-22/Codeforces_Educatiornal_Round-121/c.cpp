@@ -39,128 +39,63 @@ ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) %
 ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprime(b, m), m) + m) % m;}  //only for prime m
 /*--------------------------------------------------------------------------------------------*/
 
-/*
-     As Per the Question the maximum degree of a particular node cannot exceede 2 otherwise prime sum of edges of size 1 and 2
-     are not possible.
-
-     Therefore the tree can be represented as a doubly linked list.
-
-     The output should be done in the same order in which the edges are given as input.
-
-     (2 and 3) or (2 and 5) or (2 and 11)... are only prime paris thats themselves are prime and the resultant of them will also be a prime number.
-*/
-
-map<pair<int, int>, int> m;
-
-void dfs(int src, vector<int> adj[], vector<int> &visited , int d) {
-
-	visited[src] = 1;
-
-	for (auto nbr : adj[src]) {
-		if (!visited[nbr]) {
-			m[ {nbr, src}] = d;
-			dfs(nbr, adj, visited, d ^ 1);
-		}
-	}
-}
-
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-	int t;
+	ll t;
 	cin >> t;
 	while (t--) {
-
-		int n;
+		ll n;
 		cin >> n;
 
-		vector<int> adj[n + 1];
+		vector<ll> k, h;
 
-		map<pair<int, int>, int > pos;
-
-		for (int i = 1; i <= n - 1; i++) {
-			int u, v;
-			cin >> u >> v;
-			adj[u].pb(v);
-			adj[v].pb(u);
-
-			pos[ {u, v}] = i;
-			pos[ {v, u}] = i;
+		for (ll i = 0; i < n; i++) {
+			ll x;
+			cin >> x;
+			k.pb(x);
 		}
 
-		queue<int> q;
+		for (ll i = 0; i < n; i++) {
+			ll x;
+			cin >> x;
+			h.pb(x);
+		}
 
-		q.push(1);
+		vector<pair<ll, ll>> v;
 
-		bool f = true;
+		for (ll i = 0; i < n; i++) {
+			ll l = (k[i] - h[i]) + (ll) 1;
+			ll r = k[i];
 
-		vector<int> visited2(n + 1, 0);
+			v.pb({l, r});
+		}
 
-		while (!q.empty()) {
+		sort(all(v));
 
-			int s = q.size();
+		ll ans = 0;
 
-			if (s == 0) {
-				break;
-			}
+		ll l = v[0].ff, r = v[0].ss;
 
-			while (s--) {
-				int front = q.front();
-				q.pop();
+		for (ll i = 1; i < n; i++) {
+			ll l1 = v[i].ff, r1 = v[i].ss;
 
-				int x = adj[front].size();
+			if (l1 > r) {
+				ll d = (r - l) + (ll) 1;
 
-				if (x > 2) {
-					f = false;
-					break;
-				}
+				ans += (d * (ll) (d + 1)) / 2;
 
-				for (auto nbr : adj[front]) {
-					if (!visited2[nbr]) {
-						visited2[nbr] = 1;
-						q.push(nbr);
-					}
-				}
-			}
-
-			if (f == false) {
-				break;
+				l = l1, r = r1;
+			} else {
+				r = max(r, r1);
 			}
 		}
 
-		if (f == false) {
-			cout << -1 << endl;
-			continue;
-		}
+		ll d = (r - l) + (ll) 1;
+		ans += (d * (ll) (d + 1)) / 2;
 
-		m.clear();
+		cout << ans << endl;
 
-		vector<int> visited(n + 1, 0);
-
-		int src = -1;
-
-		for (int i = 1; i <= n; i++) {
-			if (adj[i].size() == 1) {
-				src = i;
-				break;
-			}
-		}
-
-		dfs(src, adj, visited, 2);
-
-		vector<int> ans(n + 1, 0);
-
-		for (auto p : m) {
-			int val = p.ss;
-			int x = p.ff.ff, y = p.ff.ss;
-
-			ans[pos[ {x, y}]] = val;
-		}
-
-		for (int i = 1; i <= n - 1; i++) {
-			cout << ans[i] << " ";
-		}
-		cout << endl;
 	}
 
 	return 0;

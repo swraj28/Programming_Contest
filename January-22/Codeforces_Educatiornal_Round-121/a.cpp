@@ -39,128 +39,18 @@ ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) %
 ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprime(b, m), m) + m) % m;}  //only for prime m
 /*--------------------------------------------------------------------------------------------*/
 
-/*
-     As Per the Question the maximum degree of a particular node cannot exceede 2 otherwise prime sum of edges of size 1 and 2
-     are not possible.
-
-     Therefore the tree can be represented as a doubly linked list.
-
-     The output should be done in the same order in which the edges are given as input.
-
-     (2 and 3) or (2 and 5) or (2 and 11)... are only prime paris thats themselves are prime and the resultant of them will also be a prime number.
-*/
-
-map<pair<int, int>, int> m;
-
-void dfs(int src, vector<int> adj[], vector<int> &visited , int d) {
-
-	visited[src] = 1;
-
-	for (auto nbr : adj[src]) {
-		if (!visited[nbr]) {
-			m[ {nbr, src}] = d;
-			dfs(nbr, adj, visited, d ^ 1);
-		}
-	}
-}
-
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
 	int t;
 	cin >> t;
 	while (t--) {
+		string s;
+		cin >> s;
 
-		int n;
-		cin >> n;
+		sort(all(s));
 
-		vector<int> adj[n + 1];
-
-		map<pair<int, int>, int > pos;
-
-		for (int i = 1; i <= n - 1; i++) {
-			int u, v;
-			cin >> u >> v;
-			adj[u].pb(v);
-			adj[v].pb(u);
-
-			pos[ {u, v}] = i;
-			pos[ {v, u}] = i;
-		}
-
-		queue<int> q;
-
-		q.push(1);
-
-		bool f = true;
-
-		vector<int> visited2(n + 1, 0);
-
-		while (!q.empty()) {
-
-			int s = q.size();
-
-			if (s == 0) {
-				break;
-			}
-
-			while (s--) {
-				int front = q.front();
-				q.pop();
-
-				int x = adj[front].size();
-
-				if (x > 2) {
-					f = false;
-					break;
-				}
-
-				for (auto nbr : adj[front]) {
-					if (!visited2[nbr]) {
-						visited2[nbr] = 1;
-						q.push(nbr);
-					}
-				}
-			}
-
-			if (f == false) {
-				break;
-			}
-		}
-
-		if (f == false) {
-			cout << -1 << endl;
-			continue;
-		}
-
-		m.clear();
-
-		vector<int> visited(n + 1, 0);
-
-		int src = -1;
-
-		for (int i = 1; i <= n; i++) {
-			if (adj[i].size() == 1) {
-				src = i;
-				break;
-			}
-		}
-
-		dfs(src, adj, visited, 2);
-
-		vector<int> ans(n + 1, 0);
-
-		for (auto p : m) {
-			int val = p.ss;
-			int x = p.ff.ff, y = p.ff.ss;
-
-			ans[pos[ {x, y}]] = val;
-		}
-
-		for (int i = 1; i <= n - 1; i++) {
-			cout << ans[i] << " ";
-		}
-		cout << endl;
+		cout << s << endl;
 	}
 
 	return 0;

@@ -39,143 +39,78 @@ ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) %
 ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprime(b, m), m) + m) % m;}  //only for prime m
 /*--------------------------------------------------------------------------------------------*/
 
-set<int> s;
-vector<int> prefix;
+/*
+    Since it is mandatory to pair all the people. (N pairs must be created)
 
-int dp[200005][4];
+    Let us suppose N=5.
 
-int recur(vector<int> &v, int n, int si, int splits) { // This function will give us minimum extra to be added
+    for example-> to pair the 7th person we have only 3 options (7,8),(7,9) and (7,10).
+                  If somehow we have already used the persons 8,9 and 10 to pair with some other persons then 7 cannot be paired
+                  with anyone and this is not a valid way. Therefore we need to backtrack and perform differnt pairing.
+*/
 
-	if (si >= n) {
-		if (splits == 1) {
-			return 2;
-		} else if (splits == 2) {
-			return 1;
+ll mx = LLONG_MIN;
+
+void dfs(ll s1, ll s2, ll n, vector<pair<ll, ll>> gr[], vector<ll> &visited, ll ans) {
+
+	visited[s1] = 1;
+	visited[s2] = 1;
+
+	ll src = 1;
+
+	while (src < (2 * n) and visited[src] == 1) {
+		src++;
+	}
+
+	if (src == 2 * n) {
+		mx = max(mx, ans);
+		return;
+	}
+
+	for (auto nbr : gr[src]) {
+
+		if ((!visited[nbr.ff])) {
+			dfs(src, nbr.ff, n, gr, visited, (ans ^ nbr.ss));
+
+			visited[src] = visited[nbr.ff] = 0;  // Backtracking
 		}
-
-		return 0;
 	}
-
-	if (dp[si][splits] != -1) {
-		return dp[si][splits];
-	}
-
-	if (splits == 2) {
-
-		int l_val = 0, r_val = 0;
-
-		if ((si - 1) >= 0) {
-			l_val = prefix[si - 1];
-		}
-
-		r_val = prefix[n - 1];
-
-		int val = (r_val - l_val);
-
-		auto itr = s.lower_bound(val);
-
-		int d = (*itr) - val;
-
-		// cout << val << " " << d << endl;
-
-		// return d + recur(v, n, n, 3);
-
-		return d;
-	}
-
-	int ans = INT_MAX;
-
-	for (int i = si; i < n; i++) {
-
-		int l_val = 0, r_val = 0;
-
-		if ((si - 1) >= 0) {
-			l_val = prefix[si - 1];
-		}
-
-		r_val = prefix[i];
-
-		int val = (r_val - l_val);
-
-		auto itr = s.lower_bound(val);
-
-		int d = (*itr) - val;
-
-		int rec_res = d + recur(v, n, i + 1, splits + 1);
-
-		ans = min(ans, rec_res);
-	}
-
-	return dp[si][splits] = ans;
 }
 
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-	const int N = (2e8);
+	ll n;
+	cin >> n;
 
-	int st = 0;
+	vector<pair<ll, ll>> gr[(2 * n) + 1];
 
-	while (pow(2, st) <= N) {
-		s.insert(pow(2, st));
-		st++;
-	}
-
-	int t;
-	cin >> t;
-	while (t--) {
-		int n;
-		cin >> n;
-
-		map<int, int> m;
-		for (int i = 0; i < n; i++) {
-			int x;
+	for (ll i = 1; i < (2 * n); i++) {
+		for (ll j = i + 1; j <= (2 * n); j++) {
+			ll x;
 			cin >> x;
-			m[x]++;
+			gr[i].pb({j, x});
 		}
-
-		vector<int> v;
-
-		for (auto i : m) {
-			v.pb(i.ss);
-		}
-
-		n = v.size();
-
-		if (n == 1) {
-
-			int val = v[0];
-			auto itr = s.lower_bound(val);
-
-			int d = (*itr) - val;
-
-			cout << (d + 2) << endl;
-
-			continue;
-		}
-
-		prefix.clear();
-
-		int sm = 0;
-
-		for (int i = 0; i < n; i++) {
-			sm += v[i];
-			prefix.pb(sm);
-		}
-
-		// for (int i = 0; i < n; i++) {
-		// 	cout << prefix[i] << " ";
-		// }
-		// cout << endl;
-
-		ms(dp, -1);
-
-		// int ans = recur(v, n, 0, 0);
-
-		int ans = min({recur(v, n, 0, 0), 1 + recur(v, n, 0, 1)});
-
-		cout << ans << endl;
 	}
+
+	// for (ll i = 1; i <= (2 * n); i++) {
+	// 	cout << i << "->";
+	// 	for (auto p : gr[i]) {
+	// 		cout << "{" << p.ff << " " << p.ss << "}" << " ";
+	// 	}
+	// 	cout << endl;
+	// }
+
+	// cout << endl;
+
+	for (auto ele : gr[1]) {
+
+		vector<ll> visited((2 * n) + 1, 0);
+
+		dfs(1, ele.ff, n, gr, visited, (0 ^ ele.ss));
+	}
+
+	cout << mx << endl;
 
 	return 0;
 }

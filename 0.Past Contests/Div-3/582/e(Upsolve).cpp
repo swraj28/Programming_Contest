@@ -42,50 +42,30 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-	int n, k;
-	cin >> n >> k;
+	int n;
+	string a, b;
+	cin >> n >> a >> b;
 
-	vector<int> v;
+	string x = "";
+	x += b;
+	x += a;
 
-	for (int i = 0; i < n; i++) {
-		int x;
-		cin >> x;
-		v.pb(x);
-	}
+	string ans = "";
 
-	sort(all(v));
+	set<char> s;
 
-	vector<int> cnt[200005];
+	for (int i = 3; i >= 0; i--) {
 
-	for (int i = 0; i < n; i++) {
-		int x = v[i];
+		if (s.find(x[i]) == s.end()) {
+			s.insert(x[i]);
 
-		int temp_cnt = 0;
-
-		while (x) {
-			cnt[x].pb(temp_cnt);
-			x /= 2;
-			temp_cnt++;
-		}
-	}
-
-	int mn = INT_MAX;
-
-	for (int i = 0; i <= (2e5); i++) {
-		int x = cnt[i].size();
-		if (x >= k) {
-
-			int temp_cnt = 0;
-
-			for (int j = 0; j < k; j++) {
-				temp_cnt += cnt[i][j];
+			for (int j = 0; j < n; j++) {
+				ans += x[i];
 			}
-
-			mn = min(mn, temp_cnt);
 		}
 	}
 
-	cout << mn << endl;
+	cout << ans << endl;
 
 	return 0;
 }

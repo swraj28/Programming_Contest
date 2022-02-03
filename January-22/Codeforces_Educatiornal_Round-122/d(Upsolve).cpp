@@ -39,55 +39,91 @@ ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) %
 ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprime(b, m), m) + m) % m;}  //only for prime m
 /*--------------------------------------------------------------------------------------------*/
 
+int recur(vector<pair<int, int>> &v, int n, int si, int k, vector<vector<int>> &dp) {
+	if (si >= n) {
+		return 0;
+	}
+
+	if (dp[si][k] != -1) {
+		return dp[si][k];
+	}
+
+	if (v[si].ff == 0) {
+		return dp[si][k] = v[si].ss + recur(v, n, si + 1, k, dp);
+	}
+
+	if (k >= v[si].ff) {
+		return dp[si][k] = max({v[si].ss + recur(v, n, si + 1, k - v[si].ff, dp), recur(v, n, si + 1, k, dp)});
+	}
+
+	return dp[si][k] = recur(v, n, si + 1, k, dp);
+}
+
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-	ll t;
+	vector<int> cnt(1001, INT_MAX);
+
+	cnt[0] = cnt[1] = 0;
+
+	cnt[2] = 1;
+
+	for (int i = 2; i <= 1000; i++) {
+
+		for (int x = 1; x <= i; x++) {
+
+			int d = i / x;
+
+			int val = i + d;
+
+			if (val <= 1000) {
+				cnt[val] = min({cnt[val], cnt[i] + 1});
+			}
+		}
+	}
+
+	int sm = 12000;  // overall sum of the cnt vector is about 10800 which is approximately equal 12000.
+
+	int t;
 	cin >> t;
 	while (t--) {
 
-		ll hc, dc, hm, dm, k, w, a;
-		cin >> hc >> dc >> hm >> dm >> k >> w >> a;
+		int n, k;
+		cin >> n >> k;
+
+		mk(brr, n, int);
+		mk(crr, n, int);
+
+		for (int i = 0; i < n; i++) {
+			cin >> brr[i];
+		}
+		for (int i = 0; i < n; i++) {
+			cin >> crr[i];
+		}
 
 		if (k == 0) {
-
-			ll moves_m = ceil(hm / (dc * (1.0)));
-
-			ll moves_p = ceil(hc / (dm * (1.0)));
-
-			if (moves_p >= moves_m) {
-				YES;
-			} else {
-				NO;
+			int ans = 0;
+			for (int i = 0; i < n; i++) {
+				if (brr[i] == 1) {
+					ans += crr[i];
+				}
 			}
 
+			cout << ans << endl;
 			continue;
 		}
 
-		bool f = false;
+		vector<pair<int, int>> v;
 
-		for (ll mid = 0; mid <= k; mid++) {
-
-			ll n_weapon = mid, n_armour = (k - mid);
-
-			ll new_wapon = dc + (n_weapon * (ll) w);
-			ll new_armour = hc + (n_armour * (ll) a);
-
-			ll moves_m = ceil(hm / (new_wapon * (1.0)));
-
-			ll moves_p = ceil(new_armour / (dm * (1.0)));
-
-			if (moves_p >= moves_m) {
-				f = true;
-				break;
-			}
+		for (int i = 0; i < n; i++) {
+			v.pb({cnt[brr[i]], crr[i]});
 		}
 
-		if (f) {
-			YES;
-		} else {
-			NO;
-		}
+		k = min(k, sm);
+
+		vector<vector<int>> dp(n + 1, vector<int>(k + 1, -1));
+
+		cout << recur(v, n, 0, k, dp) << endl;
 	}
 
 	return 0;

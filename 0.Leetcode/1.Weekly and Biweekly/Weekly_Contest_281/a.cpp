@@ -14,31 +14,23 @@ using namespace std;
 
 class Solution {
 public:
-	vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+	int countEven(int num) {
 
-		multiset<pair<int, int>> s;
+		int cnt = 0;
 
-		int n = arr.size();
+		for (int i = 2; i <= num; i++) {
+			string x = to_string(i);
 
-		for (int i = 0; i < n; i++) {
-			int d = abs(x - arr[i]);
-
-			s.insert({d, arr[i]});
-		}
-
-		vector<int> ans;
-
-		for (auto ele : s) {
-			if (k == 0) {
-				break;
+			int sm = 0;
+			for (auto ch : x) {
+				sm += (ch - '0');
 			}
 
-			ans.pb(ele.ss);
-			k -= 1;
+			if (sm % 2 == 0) {
+				cnt++;
+			}
 		}
 
-		sort(all(ans));
-
-		return ans;
+		return cnt;
 	}
 };

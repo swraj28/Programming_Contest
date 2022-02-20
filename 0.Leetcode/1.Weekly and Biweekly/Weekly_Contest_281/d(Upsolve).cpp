@@ -14,31 +14,32 @@ using namespace std;
 
 class Solution {
 public:
-	vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+	long long countPairs(vector<int>& nums, int k) {
 
-		multiset<pair<int, int>> s;
+		int n = nums.size();
 
-		int n = arr.size();
+		unordered_map<ll, ll> divisors;
+
+		ll cnt = 0;
 
 		for (int i = 0; i < n; i++) {
-			int d = abs(x - arr[i]);
 
-			s.insert({d, arr[i]});
-		}
+			int x = nums[i];
 
-		vector<int> ans;
+			int cont_x_res = __gcd(x, k);
 
-		for (auto ele : s) {
-			if (k == 0) {
-				break;
+			int cont_y_res = k / cont_x_res;
+
+			for (auto ele : divisors) {  // This approach will work as total number of divisors will not be large.
+
+				if (ele.ff % cont_y_res == 0) {
+					cnt += (ll)ele.ss;
+				}
 			}
 
-			ans.pb(ele.ss);
-			k -= 1;
+			divisors[cont_x_res]++;
 		}
 
-		sort(all(ans));
-
-		return ans;
+		return cnt;
 	}
 };

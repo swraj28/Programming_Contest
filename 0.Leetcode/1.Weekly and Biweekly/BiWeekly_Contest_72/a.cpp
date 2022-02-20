@@ -14,31 +14,20 @@ using namespace std;
 
 class Solution {
 public:
-	vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+	int countPairs(vector<int>& nums, int k) {
 
-		multiset<pair<int, int>> s;
+		int n = nums.size();
 
-		int n = arr.size();
+		int cnt = 0;
 
 		for (int i = 0; i < n; i++) {
-			int d = abs(x - arr[i]);
-
-			s.insert({d, arr[i]});
-		}
-
-		vector<int> ans;
-
-		for (auto ele : s) {
-			if (k == 0) {
-				break;
+			for (int j = i + 1; j < n; j++) {
+				if (nums[i] == nums[j] && (i * j) % k == 0) {
+					cnt++;
+				}
 			}
-
-			ans.pb(ele.ss);
-			k -= 1;
 		}
 
-		sort(all(ans));
-
-		return ans;
+		return cnt;
 	}
 };

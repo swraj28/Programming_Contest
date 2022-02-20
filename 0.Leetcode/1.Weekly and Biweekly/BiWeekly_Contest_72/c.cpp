@@ -14,31 +14,40 @@ using namespace std;
 
 class Solution {
 public:
-	vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+	vector<long long> maximumEvenSplit(long long finalSum) {
 
-		multiset<pair<int, int>> s;
-
-		int n = arr.size();
-
-		for (int i = 0; i < n; i++) {
-			int d = abs(x - arr[i]);
-
-			s.insert({d, arr[i]});
+		if (finalSum % 2) {
+			return {};
 		}
 
-		vector<int> ans;
+		vector<ll> v;
 
-		for (auto ele : s) {
-			if (k == 0) {
+		unordered_set<ll> s;
+
+		ll st = 2;
+
+		while (true) {
+
+			if (finalSum == 0) {
 				break;
 			}
 
-			ans.pb(ele.ss);
-			k -= 1;
+			finalSum -= st;
+			s.insert(st);
+
+			if (s.find(finalSum) != s.end()) {
+				finalSum += st;
+
+				v.pb(finalSum);
+				finalSum = 0;
+			} else {
+
+				v.pb(st);
+			}
+
+			st += 2;
 		}
 
-		sort(all(ans));
-
-		return ans;
+		return v;
 	}
 };

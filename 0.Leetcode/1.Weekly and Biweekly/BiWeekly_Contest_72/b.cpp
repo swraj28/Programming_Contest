@@ -14,31 +14,20 @@ using namespace std;
 
 class Solution {
 public:
-	vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+	vector<long long> sumOfThree(long long num) {
 
-		multiset<pair<int, int>> s;
+		vector<ll> v;
 
-		int n = arr.size();
-
-		for (int i = 0; i < n; i++) {
-			int d = abs(x - arr[i]);
-
-			s.insert({d, arr[i]});
+		if (num % 3) {
+			return v;
 		}
 
-		vector<int> ans;
+		num /= 3;
 
-		for (auto ele : s) {
-			if (k == 0) {
-				break;
-			}
+		v.pb(num - 1);
+		v.pb(num);
+		v.pb(num + 1);
 
-			ans.pb(ele.ss);
-			k -= 1;
-		}
-
-		sort(all(ans));
-
-		return ans;
+		return v;
 	}
 };

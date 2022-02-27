@@ -14,31 +14,38 @@ using namespace std;
 
 class Solution {
 public:
-	vector<int> findClosestElements(vector<int>& arr, int k, int x) {
 
-		multiset<pair<int, int>> s;
+	bool recur(string s, int n, int si, int minJump, int maxJump) {
 
-		int n = arr.size();
-
-		for (int i = 0; i < n; i++) {
-			int d = abs(x - arr[i]);
-
-			s.insert({d, arr[i]});
+		if (si == (n - 1)) {
+			return true;
 		}
 
-		vector<int> ans;
+		int l = si + minJump;
+		int r = min({si + maxJump, n - 1});
 
-		for (auto ele : s) {
-			if (k == 0) {
-				break;
+		for (int i = l; i <= r; i++) {
+			if (s[i] == '0') {
+
+				bool rec_res = recur(s, n, i, minJump, maxJump);
+
+				if (rec_res == true) {
+					return true;
+				}
 			}
-
-			ans.pb(ele.ss);
-			k -= 1;
 		}
 
-		sort(all(ans));
+		return false;
+	}
 
-		return ans;
+	bool canReach(string s, int minJump, int maxJump) {
+
+		int n = s.length();
+
+		// return recur(s, n, 0, minJump, maxJump);
+
+		int st = 0;
+
+
 	}
 };

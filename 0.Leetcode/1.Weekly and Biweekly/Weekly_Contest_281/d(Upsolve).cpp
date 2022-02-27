@@ -12,6 +12,20 @@ using namespace std;
 #define all(v) (v).begin(),(v).end()
 #define ms(arr, v) memset(arr, v, sizeof(arr))
 
+/*
+
+     Key Idea:- To find-> Total Count of (nums[i]*nums[j]) is divisible by k.
+     					--> Let nums[i]=x and nums[j]=y. Therefore (x*y)= (constant)*k
+     					---> Let 'c' be the constant. (x*y)=(c*k)
+
+     					----> Now for (x*y) to be divisible by k, The factors(Divsiors) of 'k' needs to be present in (x*y).
+
+     					----> Let a= __gcd(x,k)--> This is the highest factor common in x and k. Now the factors left to be find out (k/a)
+
+     					-----> If (k/a) is present prevviously then we manage to find a particular pair which is divsible by k.
+
+*/
+
 class Solution {
 public:
 	long long countPairs(vector<int>& nums, int k) {

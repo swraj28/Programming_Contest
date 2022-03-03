@@ -40,81 +40,46 @@ ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) %
 ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprime(b, m), m) + m) % m;}  //only for prime m
 /*--------------------------------------------------------------------------------------------*/
 
-int kadane(vector<int> &v, int n) {
-
-	int mx = v[0], c_max = 0;
-
-	for (int i = 1; i < n; i++) {
-		c_max = max({c_max + v[i], v[i]});
-		mx = max({mx, c_max});
-	}
-
-	return mx;
-}
-
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
 	int t;
 	cin >> t;
 	while (t--) {
-		int n, x;
-		cin >> n >> x;
-		vector<int> v;
+		int a, b, c, d, e, f;
+		cin >> a >> b >> c >> d >> e >> f;
 
-		for (int i = 0; i < n; i++) {
-			int x;
-			cin >> x;
-			v.pb(x);
-		}
+		if (b == d && b > f) {
+			int diff = abs(a - c);
 
-		if (n == 1) {
-			cout << v[0] << " " << (v[0] + x) << endl;
-			continue;
-		}
+			double dif = diff * (1.0);
 
-		if (x == 0) {
-			int val = kadane(v, n);
-
-			for (int i = 0; i <= n; i++) {
-				cout << val << " ";
-			}
-			cout << endl;
+			cout << fixed << setprecision(12) << dif << endl;
 
 			continue;
 		}
 
-		vector<pair<int, int>> v1;
+		if (d == f && d > b) {
+			int diff = abs(c - e);
 
-		for (int i = 0; i < n; i++) {
-			v1.pb({v[i], i});
+			double dif = diff * (1.0);
+
+			cout << fixed << setprecision(12) << dif << endl;
+
+			continue;
 		}
 
-		sort(all(v1), greater<pair<int, int>>());
+		if (b == f && b > d) {
+			int diff = abs(a - e);
 
-		for (int k = 0; k <= n; k++) {
-			if (k == 0) {
-				cout << kadane(v, n) << " ";
-				continue;
-			}
+			double dif = diff * (1.0);
 
-			vector<int> temp(n, 0);
+			cout << fixed << setprecision(12) << dif << endl;
 
-			for (int j = 0; j < k; j++) {
-				int val = v1[j].ff, idx = v1[j].ss;
-				val += x;
-				temp[idx] = val;
-			}
-
-			for (int i = k; i < n; i++) {
-				temp[v1[i].ss] = v1[i].ff;
-			}
-
-			int val = kadane(temp, n);
-
-			cout << val << " ";
+			continue;
 		}
-		cout << endl;
+
+		cout << fixed << setprecision(12) << 0.0 << endl;
 	}
 
 	return 0;

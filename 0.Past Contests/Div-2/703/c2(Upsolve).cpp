@@ -14,38 +14,87 @@ using namespace std;
 
 class Solution {
 public:
+	vector<int> findSubarray(int a[], int n) {
 
-	bool recur(string s, int n, int si, int minJump, int maxJump) {
+		bool f = false;
 
-		if (si == (n - 1)) {
-			return true;
+		for (int i = 0; i < n; i++) {
+			if (a[i] >= 0) {
+				f = true;
+				break;
+			}
 		}
 
-		int l = si + minJump;
-		int r = min({si + maxJump, n - 1});
+		if (f == false) {
+			return { -1};
+		}
 
-		for (int i = l; i <= r; i++) {
-			if (s[i] == '0') {
+		ll mx = 0, idx = -1, len = 0;
 
-				bool rec_res = recur(s, n, i, minJump, maxJump);
+		ll st = 0, sm = 0;
 
-				if (rec_res == true) {
-					return true;
+		for (ll i = 0; i < n;) {
+
+			if (a[i] < 0) {
+				ll t_len = (i - st);
+
+				if (sm > mx) {
+					mx = sm;
+					idx = st;
+					len = t_len;
+				} else if (sm == mx) {
+					if (t_len > len) {
+						mx = sm;
+						len = t_len;
+						idx = st;
+					} else if (st < idx) {
+						mx = sm;
+						len = t_len;
+						idx = st;
+					}
+				}
+
+				while ((i < n) && a[i] < 0) {
+					i++;
+				}
+
+				st = i;
+				sm = 0;
+			} else {
+				sm += (ll) a[i];
+				i++;
+			}
+		}
+
+		if (st < n) {
+
+			ll t_len = (n - st);
+
+			if (sm > mx) {
+				mx = sm;
+				idx = st;
+
+				len = t_len;
+			} else if (sm == mx) {
+				if (t_len > len) {
+					mx = sm;
+					len = t_len;
+					idx = st;
+				} else if (st < idx) {
+					mx = sm;
+					len = t_len;
+					idx = st;
 				}
 			}
 		}
 
-		return false;
-	}
+		vector<int> ans;
 
-	bool canReach(string s, int minJump, int maxJump) {
+		while (len--) {
+			ans.push_back(a[idx]);
+			idx++;
+		}
 
-		int n = s.length();
-
-		// return recur(s, n, 0, minJump, maxJump);
-
-		int st = 0;
-
-
+		return ans;
 	}
 };

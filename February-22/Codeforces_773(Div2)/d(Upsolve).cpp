@@ -40,17 +40,17 @@ ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) %
 ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprime(b, m), m) + m) % m;}  //only for prime m
 /*--------------------------------------------------------------------------------------------*/
 
-int kadane(vector<int> &v, int n) {
+/*
+        It was more of an observation Question rather than algorithmic Challenge.
 
-	int mx = v[0], c_max = 0;
+        Since we have to create two copies for one element,then if the element count is odd initially then it is not possible to do the
+        given Operation.
 
-	for (int i = 1; i < n; i++) {
-		c_max = max({c_max + v[i], v[i]});
-		mx = max({mx, c_max});
-	}
+        At every time we target to reduce our search space by 2 (i.e., Eliminate the first element and its nearest occurance)--> At every step we
+        were reducing the search space by 2. Then maximum Operation will be less than equals to n^2.
 
-	return mx;
-}
+        // It was very tricky to implement after getting the logic.
+*/
 
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
@@ -58,61 +58,90 @@ int main() {
 	int t;
 	cin >> t;
 	while (t--) {
-		int n, x;
-		cin >> n >> x;
+		int n;
+		cin >> n;
+
 		vector<int> v;
+
+		map<int, int> m;
 
 		for (int i = 0; i < n; i++) {
 			int x;
 			cin >> x;
 			v.pb(x);
+			m[x]++;
 		}
 
-		if (n == 1) {
-			cout << v[0] << " " << (v[0] + x) << endl;
-			continue;
-		}
+		bool f = true;
 
-		if (x == 0) {
-			int val = kadane(v, n);
-
-			for (int i = 0; i <= n; i++) {
-				cout << val << " ";
+		for (auto ele : m) {
+			if ((ele.ss % 2) == 1) {
+				f = false;
+				break;
 			}
-			cout << endl;
+		}
 
+		if (f == false) {
+			cout << -1 << endl;
 			continue;
 		}
+
+		// From Here the answer is possible
 
 		vector<pair<int, int>> v1;
+		vector<int> v2;
 
-		for (int i = 0; i < n; i++) {
-			v1.pb({v[i], i});
+		int done = 0;
+
+		while (!v.empty()) {
+
+			if (v.size() == 2) {
+				v2.pb(2);
+				break;
+			}
+
+			int cur_ele = v[0];
+
+			int st = 0, end = -1;
+
+			for (int i = 1; i < v.size(); i++) {
+				if (v[i] == cur_ele) {
+					end = i;
+					break;
+				}
+			}
+
+			vector<int> temp;
+
+			for (int i = st + 1; i < end; i++) {
+				temp.pb(v[i]);
+
+				v1.pb({(i - st) + (end + done), v[i]});
+			}
+
+			reverse(all(temp));
+
+			for (int i = end + 1; i < v.size(); i++) {
+				temp.pb(v[i]);
+			}
+
+			v = temp;
+
+			done += (2 * (end - st));
+
+			v2.pb((2 * (end - st)));
 		}
 
-		sort(all(v1), greater<pair<int, int>>());
+		cout << v1.size() << endl;
 
-		for (int k = 0; k <= n; k++) {
-			if (k == 0) {
-				cout << kadane(v, n) << " ";
-				continue;
-			}
+		for (auto ele : v1) {
+			cout << ele.ff << " " << ele.ss << endl;
+		}
 
-			vector<int> temp(n, 0);
+		cout << v2.size() << endl;
 
-			for (int j = 0; j < k; j++) {
-				int val = v1[j].ff, idx = v1[j].ss;
-				val += x;
-				temp[idx] = val;
-			}
-
-			for (int i = k; i < n; i++) {
-				temp[v1[i].ss] = v1[i].ff;
-			}
-
-			int val = kadane(temp, n);
-
-			cout << val << " ";
+		for (auto ele : v2) {
+			cout << ele << " ";
 		}
 		cout << endl;
 	}

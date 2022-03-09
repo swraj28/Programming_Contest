@@ -43,101 +43,85 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-	int n;
-	cin >> n;
-	vector<int> gr[n + 1];
+	ll n, m;
+	cin >> n >> m;
 
-	for (int i = 0; i < n - 1; i++) {
-		int x, y;
-		cin >> x >> y;
-		gr[x].pb(y);
-		gr[y].pb(x);
-	}
+	ll arr[n][m] = {};
 
-	queue<int> q;
-
-	vector<int> res(n + 1, 0);
-
-	vector<int> visited(n + 1, 0);
-
-	vector<int> is_good(n + 1, 0);
-
-	int cnt = 0;
-
-	for (int i = 1; i <= n; i++) {
-		if ((int)gr[i].size() == 1) {
-
-			q.push(i);
-			res[i] = 1;
-
-			visited[i] = 1;
-
-			is_good[i] = 1;
-
-			cnt++;
+	for (ll i = 0; i < n; i++) {
+		for (ll j = 0; j < m; j++) {
+			cin >> arr[i][j];
 		}
 	}
 
-	while (true) {
+	map<ll , vector<ll>> x, y;
 
-		int sze = q.size();
+	for (ll i = 0; i < n; i++) {
+		for (ll j = 0; j < m; j++) {
+			x[arr[i][j]].pb(i);
+			y[arr[i][j]].pb(j);
+		}
+	}
+
+	ll total = 0;
+
+	for (auto ele : x) {
+
+		auto v = ele.ss;
+
+		sort(all(v));
+
+		ll sze = v.size();
 
 		if (sze == 0) {
-			break;
+			continue;
 		}
 
-		while (sze--) {
+		vector<ll> suff(sze, 0);
 
-			auto f = q.front();
-			q.pop();
+		suff[sze - 1] = v[sze - 1];
 
-			for (auto nbr : gr[f]) {
-				if (!visited[nbr]) {
-					visited[nbr] = 1;
-					q.push(nbr);
-				}
-			}
+		for (ll i = sze - 2; i >= 0; i--) {
+			suff[i] = (suff[i + 1] + (ll) v[i]);
+		}
 
-			bool flag = true;
+		for (ll i = 0; i < sze; i++) {
 
-			int sm = 0;
-
-			int val = -1;
-
-			for (auto nbr : gr[f]) {
-				if (is_good[nbr] == 1) {
-					val = res[nbr];
-					flag = false;
-					break;
-				}
-
-				sm += res[nbr];
-			}
-
-			if (flag) {
-				if (res[f] == 0) {
-					res[f] = sm;
-					is_good[f] = 1;
-					cnt++;
-				}
-			} else {
-				res[f] = val;
+			if ((i + 1) < sze) {
+				total += (suff[i + 1] - ((sze - (i + 1)) * (ll) v[i]));
 			}
 		}
 	}
 
-	int sm = 0;
+	for (auto ele : y) {
 
-	for (int i = 1; i <= n; i++) {
-		sm += res[i];
+		auto v = ele.ss;
+
+		sort(all(v));
+
+		ll sze = v.size();
+
+		if (sze == 0) {
+			continue;
+		}
+
+		vector<ll> suff(sze, 0);
+
+		suff[sze - 1] = v[sze - 1];
+
+		for (ll i = sze - 2; i >= 0; i--) {
+			suff[i] = (suff[i + 1] + (ll) v[i]);
+		}
+
+		for (ll i = 0; i < sze; i++) {
+
+			if ((i + 1) < sze) {
+				total += (suff[i + 1] - ((sze - (i + 1)) * (ll) v[i]));
+			}
+		}
 	}
 
-	cout << cnt << " " << sm << endl;
-
-	for (int i = 1; i <= n; i++) {
-		cout << res[i] << " ";
-	}
-	cout << endl;
+	cout << total << endl;
 
 	return 0;
 }

@@ -40,104 +40,83 @@ ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) %
 ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprime(b, m), m) + m) % m;}  //only for prime m
 /*--------------------------------------------------------------------------------------------*/
 
+/*
+     Key Idea:-
+
+     Actually we need to find wheather the floor(x/y)=r, is present the array for every value of x,y where x>=y
+
+     Observation :-
+
+     (x/y)=1 -> x->[y,2*y-1]
+     (x/y)=2 -> x->[2*y,3*y-1]
+     (x/y)=3 -> x->[3*y,4*y-1]
+     .
+     .
+     (x/y)=k -> x->[k*y,(k+1)*y-1]
+
+     It is given that that every element in the array will be less than or equal to 'c'.
+
+     Therefore y can vary from (1 to c) and similarly (x/y) will also vary upto c.
+
+     Let (x/y)=r.
+
+     As we can see from the above observation, the value of x is present in range. so we can use prefix sum or suffix sm to store the count of the
+     value of x for all possible range.
+*/
+
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-	int n;
-	cin >> n;
-	vector<int> gr[n + 1];
+	int t;
+	cin >> t;
+	while (t--) {
 
-	for (int i = 0; i < n - 1; i++) {
-		int x, y;
-		cin >> x >> y;
-		gr[x].pb(y);
-		gr[y].pb(x);
-	}
+		int n, c;
+		cin >> n >> c;
 
-	queue<int> q;
+		mk(arr, n, int);
+		vector<int> cnt(c + 1, 0);
 
-	vector<int> res(n + 1, 0);
-
-	vector<int> visited(n + 1, 0);
-
-	vector<int> is_good(n + 1, 0);
-
-	int cnt = 0;
-
-	for (int i = 1; i <= n; i++) {
-		if ((int)gr[i].size() == 1) {
-
-			q.push(i);
-			res[i] = 1;
-
-			visited[i] = 1;
-
-			is_good[i] = 1;
-
-			cnt++;
-		}
-	}
-
-	while (true) {
-
-		int sze = q.size();
-
-		if (sze == 0) {
-			break;
+		for (int i = 0; i < n; i++) {
+			cin >> arr[i];
+			cnt[arr[i]]++;
 		}
 
-		while (sze--) {
+		vector<int> pre_sum(c + 1, 0);
 
-			auto f = q.front();
-			q.pop();
+		for (int i = 1; i <= c; i++) {
+			pre_sum[i] = (pre_sum[i - 1] + cnt[i]);
+		}
 
-			for (auto nbr : gr[f]) {
-				if (!visited[nbr]) {
-					visited[nbr] = 1;
-					q.push(nbr);
-				}
+		// Let (x/y=r)
+
+		bool f = true;
+
+		for (int y = 1; y <= c; y++) {
+
+			if (cnt[y] == 0) {
+				continue;
 			}
 
-			bool flag = true;
+			for (int r = y; r <= c; r += y) {
 
-			int sm = 0;
+				int left = r;
 
-			int val = -1;
+				int right = min({(left + y - 1), c});
 
-			for (auto nbr : gr[f]) {
-				if (is_good[nbr] == 1) {
-					val = res[nbr];
-					flag = false;
+				if ((pre_sum[right] - pre_sum[left - 1]) > 0 && (cnt[r / y] == 0)) { // It indicates that both 'r' and 'y' are present but its corresponding 'x' is not present.
+					f = false;
 					break;
 				}
-
-				sm += res[nbr];
-			}
-
-			if (flag) {
-				if (res[f] == 0) {
-					res[f] = sm;
-					is_good[f] = 1;
-					cnt++;
-				}
-			} else {
-				res[f] = val;
 			}
 		}
+
+		if (f) {
+			Yes;
+		} else {
+			No;
+		}
 	}
-
-	int sm = 0;
-
-	for (int i = 1; i <= n; i++) {
-		sm += res[i];
-	}
-
-	cout << cnt << " " << sm << endl;
-
-	for (int i = 1; i <= n; i++) {
-		cout << res[i] << " ";
-	}
-	cout << endl;
 
 	return 0;
 }

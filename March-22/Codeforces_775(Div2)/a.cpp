@@ -43,101 +43,55 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-	int n;
-	cin >> n;
-	vector<int> gr[n + 1];
-
-	for (int i = 0; i < n - 1; i++) {
-		int x, y;
-		cin >> x >> y;
-		gr[x].pb(y);
-		gr[y].pb(x);
-	}
-
-	queue<int> q;
-
-	vector<int> res(n + 1, 0);
-
-	vector<int> visited(n + 1, 0);
-
-	vector<int> is_good(n + 1, 0);
-
-	int cnt = 0;
-
-	for (int i = 1; i <= n; i++) {
-		if ((int)gr[i].size() == 1) {
-
-			q.push(i);
-			res[i] = 1;
-
-			visited[i] = 1;
-
-			is_good[i] = 1;
-
-			cnt++;
-		}
-	}
-
-	while (true) {
-
-		int sze = q.size();
-
-		if (sze == 0) {
-			break;
+	int t;
+	cin >> t;
+	while (t--) {
+		int n;
+		cin >> n;
+		mk(arr, n, int);
+		for (int i = 0; i < n; i++) {
+			cin >> arr[i];
 		}
 
-		while (sze--) {
+		int cnt = 0;
 
-			auto f = q.front();
-			q.pop();
-
-			for (auto nbr : gr[f]) {
-				if (!visited[nbr]) {
-					visited[nbr] = 1;
-					q.push(nbr);
-				}
-			}
-
-			bool flag = true;
-
-			int sm = 0;
-
-			int val = -1;
-
-			for (auto nbr : gr[f]) {
-				if (is_good[nbr] == 1) {
-					val = res[nbr];
-					flag = false;
-					break;
-				}
-
-				sm += res[nbr];
-			}
-
-			if (flag) {
-				if (res[f] == 0) {
-					res[f] = sm;
-					is_good[f] = 1;
-					cnt++;
-				}
-			} else {
-				res[f] = val;
+		for (int i = 0; i < n; i++) {
+			if (arr[i] == 0) {
+				cnt++;
 			}
 		}
+
+		if (cnt == 0) {
+			cout << 0 << endl;
+			continue;
+		}
+
+		if (cnt == 1) {
+			cout << 2 << endl;
+			continue;
+		}
+
+		int pos1 = -1, pos2 = -1;
+
+		for (int i = 0; i < n; i++) {
+			if (arr[i] == 0) {
+				pos1 = i;
+				break;
+			}
+		}
+
+		for (int i = n - 1; i >= 0; i--) {
+			if (arr[i] == 0) {
+				pos2 = i;
+				break;
+			}
+		}
+
+		pos1 -= 1, pos2 += 1;
+
+		cout << (pos2 - pos1) << endl;
+
 	}
-
-	int sm = 0;
-
-	for (int i = 1; i <= n; i++) {
-		sm += res[i];
-	}
-
-	cout << cnt << " " << sm << endl;
-
-	for (int i = 1; i <= n; i++) {
-		cout << res[i] << " ";
-	}
-	cout << endl;
 
 	return 0;
 }

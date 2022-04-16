@@ -23,6 +23,8 @@ struct TreeNode {
 	TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
+// Cumulative sum + Inorder Traversal (2 Pass Solution):-
+
 class Solution {
 public:
 
@@ -61,6 +63,39 @@ public:
 		int sm = 0;
 
 		dfs(root, sum, sm);
+
+		return root;
+	}
+};
+
+// Single Pass Solution :- (Reverse Inorder Traversal)
+
+class Solution {
+public:
+
+	void dfs(TreeNode* root, int &sm) {
+		if (root == nullptr) {
+			return;
+		}
+
+		dfs(root->right, sm);
+		sm += root->val;
+		root->val = sm;
+		dfs(root->left, sm);
+	}
+
+	TreeNode* convertBST(TreeNode* root) {
+		if (root == nullptr) {
+			return root;
+		}
+
+		if (root->left == nullptr && root->right == nullptr) {
+			return root;
+		}
+
+		int sm = 0;
+
+		dfs(root, sm);
 
 		return root;
 	}

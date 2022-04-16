@@ -14,33 +14,28 @@ using namespace std;
 
 class Solution {
 public:
-	long long smallestNumber(long long num) {
+	int minimumTime(string s) {
 
-		string s = to_string(num);
+		int n = s.length();
 
-		if (s[0] == '-') {
-			sort(s.begin() + 1, s.end(), greater<char>());
-		} else {
-			sort(all(s));
-		}
+		int val = 0;
 
+		int ans = INT_MAX;
 
-		if (s[0] == '0') {
-			if (num > 0) {
-				int idx = 0;
-				while (idx < (int)s.length()) {
-					if (s[idx] != '0') {
-						break;
-					}
-					idx++;
-				}
+		for (int i = 0; i < n; i++) {
+			if (s[i] == '1') {
 
-				swap(s[0], s[idx]);
+				ans = min(ans, (val + (n - i)));
+
+				int x = (i + 1);
+				int y = (val + 2);
+
+				val = min(x, y);
 			}
 		}
 
-		num = stoll(s);
+		ans = min(ans, val);
 
-		return num;
+		return ans;
 	}
 };
